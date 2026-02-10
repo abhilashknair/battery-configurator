@@ -1,0 +1,9 @@
+{
+    "title": "Battery Configurator",
+    "description": "Battery arrangement app",
+    "category": "Web Apps",
+    "requireWorkspace": true,
+    "requireModel": false,
+    "kind": "STATIC",
+    "defaultPage": "index.html"
+}

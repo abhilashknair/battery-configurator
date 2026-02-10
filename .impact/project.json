@@ -35,10 +35,10 @@
       "id": "8492db76952c4d5ab1299f877acfa4ad"
     },
     {
-      "relpath": "Resources/Custom",
-      "contentType": "GENERIC",
+      "relpath": "Resources/CustomWebApps",
+      "contentType": "CUSTOM_WEB_APPS",
       "defaultDisabled": false,
-      "id": "cbc5bd3af60d40a3bb8705fc51c32c85"
+      "id": "8cbbe9bf15ed4dfc8d64334fe9665ed7"
     },
     {
       "relpath": "ReferenceResults",
