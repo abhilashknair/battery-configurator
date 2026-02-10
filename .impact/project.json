@@ -1,0 +1,57 @@
+{
+  "name": "BatteryConfigurator",
+  "format": "1.0.0",
+  "dependencies": [
+    {
+      "name": "Modelica",
+      "versionSpecifier": "4.0.0"
+    },
+    {
+      "name": "Electrification",
+      "versionSpecifier": "2.1.0+build.19"
+    },
+    {
+      "name": "Modelon",
+      "versionSpecifier": "6.0.0+build.25"
+    }
+  ],
+  "content": [
+    {
+      "relpath": "Resources/Views",
+      "contentType": "VIEWS",
+      "defaultDisabled": false,
+      "id": "f5c46e96b2e64c699672dcc60e929d2f"
+    },
+    {
+      "relpath": "Resources/Favorites",
+      "contentType": "FAVORITES",
+      "defaultDisabled": false,
+      "id": "fb5f78052db242a591d685113228f4fc"
+    },
+    {
+      "relpath": "Resources/CustomFunctions",
+      "contentType": "CUSTOM_FUNCTIONS",
+      "defaultDisabled": false,
+      "id": "8492db76952c4d5ab1299f877acfa4ad"
+    },
+    {
+      "relpath": "Resources/Custom",
+      "contentType": "GENERIC",
+      "defaultDisabled": false,
+      "id": "cbc5bd3af60d40a3bb8705fc51c32c85"
+    },
+    {
+      "relpath": "ReferenceResults",
+      "contentType": "REFERENCE_RESULTS",
+      "defaultDisabled": false,
+      "id": "cf3021e6c09140fd8418a3e4b0df4b3d"
+    },
+    {
+      "relpath": "Resources/ExperimentDefinitions",
+      "contentType": "EXPERIMENT_DEFINITIONS",
+      "defaultDisabled": false,
+      "id": "aa05969a7d0148d8bb150517e8758559"
+    }
+  ],
+  "executionOptions": []
+}
