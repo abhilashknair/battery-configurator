@@ -51,6 +51,13 @@
       "contentType": "EXPERIMENT_DEFINITIONS",
       "defaultDisabled": false,
       "id": "aa05969a7d0148d8bb150517e8758559"
+    },
+    {
+      "relpath": "MyPackage",
+      "contentType": "MODELICA",
+      "name": "MyPackage",
+      "defaultDisabled": false,
+      "id": "f017a62248b549f2b311a1da5b35adb6"
     }
   ],
   "executionOptions": []
