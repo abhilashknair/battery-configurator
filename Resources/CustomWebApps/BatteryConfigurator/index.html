@@ -136,20 +136,32 @@
          * EXPORT TO EXCEL FUNCTION
          */
         function exportToExcel() {
+            // 1. Prepare data and sort by series index
             const data = Object.values(mapping).sort((a, b) => a.s - b.s);
             if (data.length === 0) {
                 alert("No data to export!");
                 return;
             }
-
-            // Create a worksheet
+        
+            // 2. Create worksheet from data
             const ws = XLSX.utils.json_to_sheet(data);
-            
-            // Create a workbook and append the worksheet
+            // 3. Define the Named Range "map"
+            // Data starts at row 2 (index 1) to skip headers. 
+            // Columns are s, p, x, y (0 through 3).
+            const rangeAddress = `Sheet1!$A$2:$D$${data.length + 1}`;
+            // 4. Create Workbook and add the range metadata
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "BatteryMapping");
-
-            // Trigger download
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+            // Initialize defined names array if it doesn't exist
+            if (!wb.Workbook) wb.Workbook = {};
+            if (!wb.Workbook.Names) wb.Workbook.Names = [];
+            // Add the "map" named range
+            wb.Workbook.Names.push({
+                Name: "map",
+                Ref: rangeAddress
+            });
+        
+            // 5. Trigger download
             XLSX.writeFile(wb, "battery_mapping.xlsx");
         }
 
