@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery Cell Mapper → Modelica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        .cell-btn {
+            width: 60px;
+            height: 60px;
+            transition: all 0.2s;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">Battery Cell Mapper → Modelica</h1>
+        
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6 items-end">
+            <div>
+                <label class="block text-sm font-medium">Ns</label>
+                <input type="number" id="ns" value="4" class="w-full border rounded px-2 py-1">
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Np</label>
+                <input type="number" id="np" value="2" class="w-full border rounded px-2 py-1">
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Rows</label>
+                <input type="number" id="rows" value="4" class="w-full border rounded px-2 py-1">
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Cols</label>
+                <input type="number" id="cols" value="4" class="w-full border rounded px-2 py-1">
+            </div>
+            <button onclick="createGrid()" class="bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700">
+                Create Grid
+            </button>
+        </div>
+
+        <div class="mb-6 flex items-center gap-4">
+            <label class="font-medium">Current Parallel Group (p):</label>
+            <input type="number" id="p_group" value="1" class="w-20 border rounded px-2 py-1 text-center">
+        </div>
+
+        <div class="border rounded-lg bg-gray-50 overflow-auto mb-6 p-4" style="max-height: 400px;">
+            <div id="grid-container" class="inline-grid gap-2">
+                </div>
+        </div>
+
+        <div class="space-y-2">
+            <div class="flex justify-between items-center">
+                <label class="font-bold text-gray-700">Modelica Output:</label>
+                <div class="flex gap-2">
+                    <button onclick="copyToClipboard()" class="text-xs bg-gray-200 px-3 py-1 rounded hover:bg-gray-300">Copy Text</button>
+                    <button onclick="exportToExcel()" class="text-xs bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 font-bold">Export to Excel (.xlsx)</button>
+                </div>
+            </div>
+            <textarea id="output" readonly class="w-full h-32 p-3 font-mono text-sm border rounded bg-gray-50 text-blue-700" placeholder="[s,p,x,y; ...]"></textarea>
+        </div>
+    </div>
+
+    <script>
+        let mapping = {};
+        let seriesCounter = 1;
+
+        function createGrid() {
+            const rows = parseInt(document.getElementById('rows').value);
+            const cols = parseInt(document.getElementById('cols').value);
+            const container = document.getElementById('grid-container');
+            
+            mapping = {};
+            seriesCounter = 1;
+            document.getElementById('output').value = "";
+            
+            container.style.gridTemplateColumns = `repeat(${cols}, min-content)`;
+            container.innerHTML = '';
+
+            for (let r = 1; r <= rows; r++) {
+                for (let c = 1; c <= cols; c++) {
+                    const btn = document.createElement('button');
+                    btn.id = `cell-${r}-${c}`;
+                    btn.innerText = "+";
+                    btn.className = "cell-btn border-2 border-dashed border-gray-300 rounded flex items-center justify-center bg-white hover:border-blue-500 text-gray-400 font-bold";
+                    btn.onclick = () => assignCell(r, c);
+                    container.appendChild(btn);
+                }
+            }
+        }
+
+        function assignCell(r, c) {
+            const ns = parseInt(document.getElementById('ns').value);
+            const np = parseInt(document.getElementById('np').value);
+            const p = parseInt(document.getElementById('p_group').value);
+            const btn = document.getElementById(`cell-${r}-${c}`);
+            const key = `${r}-${c}`;
+
+            if (!mapping[key]) {
+                if (seriesCounter > (ns * np)) {
+                    alert("All electrical cells assigned!");
+                    return;
+                }
+
+                mapping[key] = { s: seriesCounter, p: p, x: r, y: c };
+                btn.innerText = seriesCounter;
+                btn.classList.remove('border-dashed', 'bg-white', 'text-gray-400');
+                btn.classList.add('bg-red-600', 'text-white', 'border-solid');
+                seriesCounter++;
+            } else {
+                mapping[key].p = p;
+                btn.classList.remove('bg-red-600');
+                btn.classList.add('bg-orange-500');
+            }
+
+            updateModelica();
+        }
+
+        function updateModelica() {
+            const data = Object.values(mapping).sort((a, b) => a.s - b.s);
+            const rows = data.map(d => `${d.s},${d.p},${d.x},${d.y}`);
+            const output = `[${rows.join(';')}]`;
+            document.getElementById('output').value = output;
+        }
+
+        function copyToClipboard() {
+            const copyText = document.getElementById("output");
+            if (!copyText.value) return;
+            copyText.select();
+            document.execCommand("copy");
+            alert("Copied to clipboard!");
+        }
+
+        /**
+         * EXPORT TO EXCEL FUNCTION
+         */
+        function exportToExcel() {
+            const data = Object.values(mapping).sort((a, b) => a.s - b.s);
+            if (data.length === 0) {
+                alert("No data to export!");
+                return;
+            }
+
+            // Create a worksheet
+            const ws = XLSX.utils.json_to_sheet(data);
+            
+            // Create a workbook and append the worksheet
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "BatteryMapping");
+
+            // Trigger download
+            XLSX.writeFile(wb, "battery_mapping.xlsx");
+        }
+
+        createGrid();
+    </script>
+</body>
+</html>
