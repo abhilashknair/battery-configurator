@@ -5,7 +5,7 @@ A lightweight, browser-based utility designed to bridge the gap between physical
 
 
 ##  Live Demo
-https://abhilashknair.github.io/battery-configurator/
+Demo[https://abhilashknair.github.io/battery-configurator/Resources/CustomWebApps/BatteryConfigurator/index.html]
 
 ##  Overview
 When simulating large battery packs in Modelica, a common requirement is an array that defines the relationship between a cell's electrical index and its physical position (often for thermal coupling). This tool provides a GUI to generate that array without manual data entry.
